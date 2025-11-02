@@ -29,7 +29,11 @@
 
             <!-- Page Content -->
             <main>
+<<<<<<< HEAD
                 {{ $slot }}
+=======
+               @yield('content')
+>>>>>>> 742876e (新規投稿機能を削除・ダッシュボード整理)
             </main>
         </div>
     </body>

@@ -29,6 +29,7 @@ class PostController extends Controller
         'name' => $request->name,
         'content' => $request->content,
         'user_id' => auth()->id(), // ←ここが重要
+<<<<<<< HEAD
 
     ]);
 
@@ -66,5 +67,50 @@ class PostController extends Controller
         // SQL例: DELETE FROM posts WHERE id=?
 
         return redirect('/')->with('message', '投稿を削除しました');
+=======
+
+    ]);
+
+    return redirect('/');
+
+>>>>>>> 742876e (新規投稿機能を削除・ダッシュボード整理)
     }
+
+    // 編集フォームを表示
+    public function edit(Post $post)
+    {
+        return view('posts.edit', compact('post'));
+        // SQLイメージ: SELECT * FROM posts WHERE id = ?
+    }
+
+    // 更新処理
+    public function update(Request $request, Post $post)
+    {
+        $request->validate([
+            'name' => 'required|max:50',
+            'content' => 'required|max:255',
+        ]);
+
+        $post->update($request->only(['name', 'content']));
+        // SQL例: UPDATE posts
+        // SET name='...', content='...', updated_at=NOW()
+        // WHERE id=?
+
+        return redirect('/')->with('message', '投稿を更新しました');
+    }
+
+    // 削除処理
+    public function destroy(Post $post)
+    {
+        $post->delete();
+        // SQL例: DELETE FROM posts WHERE id=?
+
+        return redirect('/')->with('message', '投稿を削除しました');
+    }
+  public function create()
+    {
+        // 投稿作成画面を表示する
+        return view('posts.create');
+    }
+
 }
