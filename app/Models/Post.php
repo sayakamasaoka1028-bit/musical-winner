@@ -12,5 +12,5 @@ class Post extends Model
 
     // 一括代入を許可するカラム
     // これがないと Post::create($request->all()) で _token が混ざった時にエラーになる
-    protected $fillable = ['name', 'content'];
+    protected $fillable = ['name', 'content','user_id'];
 }

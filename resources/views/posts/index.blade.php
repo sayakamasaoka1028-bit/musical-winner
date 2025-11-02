@@ -72,23 +72,49 @@
 
     <!-- 投稿フォーム -->
     <div class="post-form">
+        @auth
+        <p>
+        ログイン中: {{ auth()->user()->name }}
+        <form action="{{ route('logout') }}" method="POST" style="display:inline;">
+            @csrf
+            <button type="submit">ログアウト</button>
+        </form>
+    </p>
+    <!-- 投稿フォーム -->
         <form action="/posts" method="POST">
             @csrf
             <input type="text" name="name" placeholder="名前">
             <textarea name="content" placeholder="投稿内容"></textarea>
             <button type="submit">投稿</button>
         </form>
+    @else
+        <p>投稿するには <a href="{{ route('login') }}">ログイン</a> してください。</p>
+
+       @endauth
     </div>
+<h2>投稿一覧</h2>
 
-    <h2>投稿一覧</h2>
+@foreach ($posts as $post)
+    <div class="post-item">
+        <strong>{{ $post->name }}</strong>
+        <small>{{ $post->created_at->format('Y-m-d H:i') }}</small>
+        <p>{{ $post->content }}</p>
 
-    <!-- 投稿の表示 -->
-    @foreach ($posts as $post)
-        <div class="post-item">
-            <strong>{{ $post->name }}</strong>
-            <small>{{ $post->created_at->format('Y-m-d H:i') }}</small>
-            <p>{{ $post->content }}</p>
-        </div>
-    @endforeach
+        @auth
+            @if ($post->user_id == auth()->id())
+                <!-- 編集ボタン -->
+                <a href="{{ route('posts.edit', $post) }}">編集</a>
+
+                <!-- 削除ボタン -->
+                <form action="{{ route('posts.destroy', $post) }}" method="POST" style="display:inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" onclick="return confirm('本当に削除しますか？')">削除</button>
+                </form>
+            @endif
+        @endauth
+    </div>
+@endforeach
+
 </body>
 </html>
