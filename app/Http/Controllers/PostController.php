@@ -1,19 +1,19 @@
-<?php  // ← これが必須
-namespace App\Http\Controllers;
+<?php  // PHPファイルであることを示す（必須）
+namespace App\Http\Controllers; // コントローラの名前空間を指定
 
-use Illuminate\Http\Request;
-use App\Models\Post;
+use Illuminate\Http\Request; // HTTPリクエストを扱うためのクラスをインポート
+use App\Models\Post; // Postモデルをインポート（DBのpostsテーブルに対応）
 
 class PostController extends Controller
 {
-    // 投稿一覧
+    // 投稿一覧を表示するメソッド
     public function index()
-    {
+    	{
         // Postモデルから投稿を全件取得（新しい順に）
-        $posts = Post::latest()->get();
+        $posts = Post::latest()->get(); // latest()はcreated_at DESCの意味
 
-        // ビューに $posts を渡す
-        return view('posts.index', compact('posts'));
+        // ビュー(posts.index)に$posts変数を渡す
+        return view('posts.index', compact('posts')); // compact('posts') は ['posts' => $posts] と同じ意味
     }
 
     // 投稿保存
@@ -29,11 +29,25 @@ class PostController extends Controller
         'name' => $request->name,
         'content' => $request->content,
         'user_id' => auth()->id(), // ←ここが重要
-<<<<<<< HEAD
 
+// 投稿を保存するメソッド
+public function store(Request $request)
+{
+    // 入力バリデーション
+    $request->validate([
+        'name' => 'required|max:50',    // nameは必須、最大50文字
+        'content' => 'required',        // contentは必須
     ]);
 
-    return redirect('/');
+    // ログインユーザーのIDを追加して保存
+    Post::create([
+        'name' => $request->name,       // フォームのnameをセット
+        'content' => $request->content, // フォームのcontentをセット
+        'user_id' => auth()->id(),      // 現在ログインしているユーザーID
+    ]); // ←ここが重要（半角セミコロンで閉じる）
+
+// 投稿後、トップページ('/')にリダイレクト
+    return redirect('/'); // ブラウザをトップページに戻す
 
     }
 
@@ -67,13 +81,11 @@ class PostController extends Controller
         // SQL例: DELETE FROM posts WHERE id=?
 
         return redirect('/')->with('message', '投稿を削除しました');
-=======
 
     ]);
 
     return redirect('/');
 
->>>>>>> 742876e (新規投稿機能を削除・ダッシュボード整理)
     }
 
     // 編集フォームを表示
